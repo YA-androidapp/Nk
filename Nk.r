@@ -1,4 +1,4 @@
-﻿# Copyright (c) 2017 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
+# Copyright (c) 2017 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 # install.packages('dplyr')
 # install.packages('quanteda')
@@ -26,10 +26,29 @@ sapply(url.news, function(url.news) {
   
   sapply(url.news.pages, function(page) {
     html.news.page <- read_html(page, encoding='UTF-8')
+    
+    news.title <- html.news.page %>% html_nodes(xpath='//meta[@property="og:title"]') %>% html_attr('content')
+    
+    news.datetime <- html.news.page %>% html_nodes(xpath='//dd[@class="cmnc-publish"]') %>% html_text()
+    
     news.content <- html.news.page %>% html_nodes(xpath='//div[@itemprop="articleBody"]') %>% html_text()
     news.content <- gsub('(^[ \r\n　]+)|([ \r\n　]+$)|([\r\n\t]+)', '', news.content)
     news.content <- gsub('。　', '。', news.content)
-    news.contents <<- rbind(news.contents, data.frame(url=page, text=news.content, dist='', stringsAsFactors=F))
+
+    news.keywords <- html.news.page %>% html_nodes(xpath='//meta[@name="news_keywords"]') %>% html_attr('content')
+    # news.keywords <- strsplit(news.keywords, ',')
+    
+    news.contents <<- rbind(news.contents,
+                            data.frame(
+                              url=page,
+                              title=news.title,
+                              datetime=strptime(news.datetime, "%Y/%m/%d %H:%M"),
+                              text=news.content,
+                              keywords=news.keywords,
+                              dist='',
+                              stringsAsFactors=F
+                              )
+                            )
   })
 })
 
