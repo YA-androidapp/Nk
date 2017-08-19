@@ -1,4 +1,4 @@
-﻿# Copyright (c) 2017 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
+# Copyright (c) 2017 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 # install.packages('dplyr')
 # install.packages('quanteda')
